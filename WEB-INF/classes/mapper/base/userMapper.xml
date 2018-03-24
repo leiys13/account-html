@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.sadasen.account.mapper.UserMapper">
+	
+	<insert id="insert" parameterType="user">
+		insert into sys_user(id,username,nickname,password,regTime) values(#{id},#{userName},#{userName},#{password},now())
+	</insert>
+	
+	<select id="selectIsRegisted" parameterType="String" resultType="int">
+		select count(0) from sys_user where username = #{userName}
+	</select>
+	
+	<select id="selectForLogin" parameterType="user" resultType="user">
+		select id, userName, nickName from sys_user where userName = #{userName} and password = #{password}
+	</select>
+	
+	<select id="selectAll" resultType="user">
+		select id, userName from sys_user
+	</select>
+	
+</mapper>

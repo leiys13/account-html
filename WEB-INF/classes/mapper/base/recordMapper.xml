@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.sadasen.account.mapper.RecordMapper">
+	
+	<insert id="insert" parameterType="record">
+		insert into a_record(id,cid,uid,mid,price,rdate,remark,create_time) values(#{id},#{cid},#{uid},#{mid},#{price},#{rdate},#{remark},now())
+	</insert>
+	
+	<select id="selectById" parameterType="String" resultType="com.sadasen.account.vo.ConsumeRecord">
+		select r.id,round(r.price/100,2) as price,r.rdate,r.remark,c.name,m.method from a_record r
+		join a_consume c on r.cid = c.id
+		join a_method m on r.mid = m.id
+		where r.id = #{id}
+		limit 1
+	</select>
+	
+	<select id="selectConsumeRecord" parameterType="com.sadasen.account.dto.RecordDto" resultType="com.sadasen.account.vo.ConsumeRecord">
+		select r.id,round(r.price/100,2) as price,r.rdate,r.remark,c.name,m.method from a_record r
+		join a_consume c on r.cid = c.id
+		join a_method m on r.mid = m.id
+		where r.uid = #{uid}
+		<if test="beginDate != null and beginDate != ''">
+			and r.rdate between #{beginDate} and #{endDate}
+		</if> 
+		<if test="cdate != null">
+			and r.rdate = #{cdate}
+		</if>
+		order by r.rdate desc,r.create_time desc
+	</select>
+	
+	<select id="selectConsume20" parameterType="String" resultType="String">
+		select rdate from a_record where rdate &lt; #{endDate} order by create_time desc LIMIT 19, 1;
+	</select>
+	
+	<select id="selectConsumeRecordForList" parameterType="com.sadasen.account.dto.RecordDto" resultType="com.sadasen.account.vo.ConsumeRecord">
+		select r.id,round(r.price/100,2) as price,r.rdate,c.name from a_record r
+		join a_consume c on r.cid = c.id
+		join a_method m on r.mid = m.id
+		where r.uid = #{uid}
+		<if test="beginDate != null and beginDate != ''">
+			and r.rdate &gt;= #{beginDate}
+		</if>
+		<if test="endDate != null and endDate != ''">
+			and r.rdate &lt; #{endDate}
+		</if>
+		order by r.rdate desc,r.create_time desc
+	</select>
+	
+	<select id="selectTop30" parameterType="com.sadasen.account.dto.RecordDto" resultType="String">
+		select DATE_FORMAT(rdate,'%Y-%m-%d') as rdate from a_record where uid = #{uid} 
+		<if test="endDate != null and endDate != ''">
+			and rdate &lt; #{endDate} 
+		</if>
+		ORDER BY rdate DESC limit 30
+	</select>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from a_record where id = #{id}
+	</delete>
+	
+</mapper>

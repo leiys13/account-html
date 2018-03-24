@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.sadasen.account.mapper.ConsumeMapper">
+	
+	<insert id="insert" parameterType="consume">
+		insert into a_consume(id,name,pid,uid,code,level,sort,create_time) values(#{id},#{name},#{pid},#{uid},#{code},#{level},#{sort},now())
+	</insert>
+	
+	<update id="update" parameterType="consume">
+		update a_consume set name = #{name} where id = #{id} and uid = #{uid}
+	</update>
+	
+	<select id="selectById" parameterType="String" resultType="consume">
+		select id,name,pid,code,level from a_consume where id = #{id}
+	</select>
+	
+	<select id="selectCountByCondition" parameterType="consume" resultType="int">
+		select count(0) from a_consume where uid = #{uid} and pid = #{pid}
+	</select>
+	
+	<select id="selectConsumeByCondition" parameterType="consume" resultType="consume">
+		select id,name,sort,level from a_consume where uid = #{uid}
+		<if test="pid != null and pid != ''">
+			and pid = #{pid}
+		</if>
+		order by sort
+	</select>
+	
+</mapper>

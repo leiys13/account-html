@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace：必须与对应的接口全类名一致
+	id:必须与对应接口的某个对应的方法名一致
+	
+ -->
+<mapper namespace="com.sadasen.account.mapper.MethodMapper">
+	
+	<insert id="insert" parameterType="method">
+		insert into a_method(id,method,uid,sort,create_time) values(#{id},#{method},#{uid},#{sort},now())
+	</insert>
+	
+	<update id="update" parameterType="method">
+		update a_method set method = #{method} where id = #{id}
+	</update>
+	
+	<delete id="deleteById" parameterType="String">
+		delete from a_method where id = #{id}
+	</delete>
+	
+	<select id="selectById" parameterType="String" resultType="method">
+		select id, method, sort from a_method where id = #{id}
+	</select>
+	
+	<select id="selectCountByCondition" parameterType="method" resultType="int">
+		select count(0) from a_method where uid = #{uid}
+	</select>
+	
+	<select id="selectAll" resultType="method" parameterType="String">
+		select id, method, sort from a_method where uid = #{uid} order by sort
+	</select>
+	
+</mapper>
